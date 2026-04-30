@@ -59,7 +59,7 @@ export class Question extends AggregateRoot<QuestionProps> {
   }
 
   private touch() {
-    this.props.createdAt = new Date()
+    this.props.updatedAt = new Date()
   }
 
   set title(title: string) {
