@@ -30,7 +30,7 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "title" : "pergunta de teste 2",
+    "title" : "pergunta de teste 3",
     "content": "testando pergunta pra ver se gera slug?"
 }
 
