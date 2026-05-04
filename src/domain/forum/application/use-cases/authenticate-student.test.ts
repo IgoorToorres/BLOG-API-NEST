@@ -24,7 +24,7 @@ describe('Authenticate Student', () => {
   })
 
   it('should be able to authenticate a student', async () => {
-    const student = makeStudent({
+    const student = await makeStudent({
       email: 'johndoe@example.com',
       password: await fakeHasher.hash('123456'),
     })

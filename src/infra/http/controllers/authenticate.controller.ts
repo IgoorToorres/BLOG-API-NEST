@@ -19,13 +19,19 @@ export class AuthenticateController {
   async handle(@Body() body: AuthenticateBodySchema) {
     const { email, password } = body
 
-    const { value } = await this.authenticateStudent.execute({
+    const result = await this.authenticateStudent.execute({
       email,
       password,
     })
 
+    if (result.isLeft()) {
+      throw new Error('')
+    }
+
+    const { accessToken } = result.value
+
     return {
-      access_token: value,
+      access_token: accessToken,
     }
   }
 }
