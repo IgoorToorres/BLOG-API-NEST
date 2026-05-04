@@ -21,10 +21,14 @@ export class CreateAccountController {
   async create(@Body() body: CreateBodySchema) {
     const { name, email, password } = body
 
-    await this.registerStudent.execute({
+    const result = await this.registerStudent.execute({
       name,
       email,
       password,
     })
+
+    if (result.isLeft()) {
+      throw new Error('')
+    }
   }
 }
