@@ -13,12 +13,16 @@ export async function makeQuestion(
   id?: UniqueEntityID,
 ) {
   const { faker } = await import('@faker-js/faker')
+  const title = override.title ?? faker.lorem.sentence()
+  const generatedSlug = Slug.createFromText(
+    `${title}-${faker.string.alphanumeric(8).toLowerCase()}`,
+  )
 
   const question = Question.create(
     {
       authorId: new UniqueEntityID(),
-      title: faker.lorem.sentence(),
-      slug: Slug.create('example-question'),
+      title,
+      slug: generatedSlug,
       content: faker.lorem.text(),
       ...override,
     },
