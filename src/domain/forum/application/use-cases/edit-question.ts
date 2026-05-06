@@ -4,9 +4,10 @@ import { QuestionsRepository } from '../repository/questions-repository'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { QuestionAttachmentList } from '../../enterprise/entities/question-attachments-list'
-import { QuestionAttachmentsRepository } from '../repository/question-attachments-repository'
+import type { QuestionAttachmentsRepository } from '../repository/question-attachments-repository'
 import { QuestionAttachment } from '../../enterprise/entities/question-attachment'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { Injectable } from '@nestjs/common'
 
 interface EditQuestionUseCaseRequest {
   authorId: string
@@ -22,6 +23,7 @@ type EditQuestionUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class EditQuestionUseCase {
   constructor(
     private questionRepository: QuestionsRepository,
