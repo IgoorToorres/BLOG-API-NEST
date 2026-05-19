@@ -2,9 +2,13 @@ import { DomainEvents } from '@/core/events/domain-events'
 import { PaginationParams } from '@/core/repositories/pagination-params'
 import { AnswerCommentsRepository } from '@/domain/forum/application/repository/answer-comments-repository'
 import { AnswerComment } from '@/domain/forum/enterprise/entities/answer-comment'
+import { CommentWithAuthor } from '@/domain/forum/enterprise/entities/value-objects/comment-with-author'
+import { InMemoryStudentRepository } from './in-memory-student-repository'
 
 export class InMemoryAnswerCommentsRepository implements AnswerCommentsRepository {
   public items: AnswerComment[] = []
+
+  constructor(private studentRepository: InMemoryStudentRepository) {}
 
   async create(answerComment: AnswerComment) {
     this.items.push(answerComment)
@@ -33,6 +37,38 @@ export class InMemoryAnswerCommentsRepository implements AnswerCommentsRepositor
       .filter((item) => item.answerId.toString() === AnswerId)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice((page - 1) * 20, page * 20)
+
+    return answerComments
+  }
+
+  async findManyByAnswerIdWithAuthor(
+    answerId: string,
+    { page }: PaginationParams,
+  ) {
+    const answerComments = this.items
+      .filter((item) => item.answerId.toString() === answerId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice((page - 1) * 20, page * 20)
+      .map((comment) => {
+        const author = this.studentRepository.items.find((item) =>
+          item.id.equals(comment.authorId),
+        )
+
+        if (!author) {
+          throw new Error(
+            `Author with ID ${comment.authorId.toString()} does not exists`,
+          )
+        }
+
+        return CommentWithAuthor.create({
+          commentId: comment.id,
+          content: comment.content,
+          createdAt: comment.createdAt,
+          updatedAt: comment.updatedAt,
+          authorId: comment.authorId,
+          author: author.name,
+        })
+      })
 
     return answerComments
   }
