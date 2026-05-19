@@ -32,7 +32,12 @@ describe('Fetch question comments (E2E)', () => {
   })
 
   test('[GET] /questions/:questionId/comments', async () => {
-    const user = await studentFactory.makePrismaStudent()
+    const user = await studentFactory.makePrismaStudent({
+      name: 'John Doe',
+    })
+    const user2 = await studentFactory.makePrismaStudent({
+      name: 'Jane Doe',
+    })
 
     const accessToken = jwt.sign({ sub: user.id.toString() })
 
@@ -47,7 +52,7 @@ describe('Fetch question comments (E2E)', () => {
         content: 'Comment 01',
       }),
       questionCommentFactory.makePrismaQuestionComment({
-        authorId: user.id,
+        authorId: user2.id,
         questionId: question.id,
         content: 'Comment 02',
       }),
@@ -63,8 +68,22 @@ describe('Fetch question comments (E2E)', () => {
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
       comments: expect.arrayContaining([
-        expect.objectContaining({ content: 'Comment 01' }),
-        expect.objectContaining({ content: 'Comment 01' }),
+        expect.objectContaining({
+          commentId: expect.any(String),
+          content: 'Comment 01',
+          authorId: user.id.toString(),
+          authorName: 'John Doe',
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+        }),
+        expect.objectContaining({
+          commentId: expect.any(String),
+          content: 'Comment 02',
+          authorId: user2.id.toString(),
+          authorName: 'Jane Doe',
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+        }),
       ]),
     })
   })
