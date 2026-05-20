@@ -4,14 +4,17 @@ import { DeleteQuestionCommentUseCase } from './delete-question-comment'
 import { makeQuestionComment } from '@/../test/factories/make-question-comment'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
+import { InMemoryStudentRepository } from '@/../test/repositories/in-memory-student-repository'
 
 let inMemoryQuestionCommentsRepository: InMemoryQuestionCommentsRepository
+let inMemoryStudentRepository: InMemoryStudentRepository
 let sut: DeleteQuestionCommentUseCase
 
 describe('Delete question comment', () => {
   beforeEach(() => {
+    inMemoryStudentRepository = new InMemoryStudentRepository()
     inMemoryQuestionCommentsRepository =
-      new InMemoryQuestionCommentsRepository()
+      new InMemoryQuestionCommentsRepository(inMemoryStudentRepository)
     sut = new DeleteQuestionCommentUseCase(inMemoryQuestionCommentsRepository)
   })
 

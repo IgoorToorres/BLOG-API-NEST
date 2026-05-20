@@ -12,10 +12,12 @@ import {
 import { InMemoryNotificationsRepository } from '@/../test/repositories/in-memory-notifications-repository'
 import { InMemoryAnswerAttachmentsRepository } from '@/../test/repositories/in-memory-answer-attachments-repository copy'
 import { waitFor } from '../../../../../test/utils/wait-for'
+import { InMemoryStudentRepository } from '@/../test/repositories/in-memory-student-repository'
 
 let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository
 let inMemoryAnswersRepository: InMemoryAnswersRepository
 let inMemoryAnswerCommentsRepository: InMemoryAnswerCommentsRepository
+let inMemoryStudentRepository: InMemoryStudentRepository
 let inMemoryNotificationsRepository: InMemoryNotificationsRepository
 let sendNotification: SendNotificationUseCase
 
@@ -32,7 +34,10 @@ describe('On answer new comment', () => {
     inMemoryAnswersRepository = new InMemoryAnswersRepository(
       inMemoryAnswerAttachmentsRepository,
     )
-    inMemoryAnswerCommentsRepository = new InMemoryAnswerCommentsRepository()
+    inMemoryStudentRepository = new InMemoryStudentRepository()
+    inMemoryAnswerCommentsRepository = new InMemoryAnswerCommentsRepository(
+      inMemoryStudentRepository,
+    )
     inMemoryNotificationsRepository = new InMemoryNotificationsRepository()
     sendNotification = new SendNotificationUseCase(
       inMemoryNotificationsRepository,
