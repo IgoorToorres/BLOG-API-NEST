@@ -41,7 +41,7 @@ describe('Get question by slug', () => {
     expect(result.isRight()).toBeTruthy()
 
     if (result.isRight()) {
-      expect(result.value.question.slug).toBe('example-question')
+      expect(result.value.question.slug.value).toBe('example-question')
       expect(result.value.question.questionId).toEqual(newQuestion.id)
       expect(result.value.question.authorId).toEqual(author.id)
       expect(result.value.question.author).toBe(author.name)
