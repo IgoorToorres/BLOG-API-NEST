@@ -31,12 +31,12 @@ describe('Get question by slug (E2E)', () => {
 
   test('[GET] /questions/:slug', async () => {
     const user = await studentFactory.makePrismaStudent()
-
     const accessToken = jwt.sign({ sub: user.id.toString() })
 
-    await questionFactory.makePrismaQuestion({
+    const question = await questionFactory.makePrismaQuestion({
       authorId: user.id,
       title: 'Question 01',
+      content: 'Question 01 content',
       slug: Slug.create('question-01'),
     })
 
@@ -47,7 +47,28 @@ describe('Get question by slug (E2E)', () => {
 
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
-      question: expect.objectContaining({ title: 'Question 01' }),
+      question: expect.objectContaining({
+        questionId: question.id.toString(),
+        authorId: user.id.toString(),
+        authorName: user.name,
+        title: 'Question 01',
+        content: 'Question 01 content',
+        slug: {
+          value: 'question-01',
+        },
+      }),
     })
+  })
+
+  test('[GET] /questions/:slug should return 400 when question does not exist', async () => {
+    const user = await studentFactory.makePrismaStudent()
+    const accessToken = jwt.sign({ sub: user.id.toString() })
+
+    const response = await request(app.getHttpServer())
+      .get('/questions/non-existing-question')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send()
+
+    expect(response.statusCode).toBe(400)
   })
 })
