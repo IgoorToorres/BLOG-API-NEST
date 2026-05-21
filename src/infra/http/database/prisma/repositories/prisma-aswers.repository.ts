@@ -4,6 +4,7 @@ import { Answer } from '@/domain/forum/enterprise/entities/answer'
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
 import { PrismaAnswerMapper } from '../mappers/prisma-answer-mapper'
+import { DomainEvents } from '@/core/events/domain-events'
 
 @Injectable()
 export class PrismaAswersRepository implements AnswerRepository {
@@ -15,6 +16,8 @@ export class PrismaAswersRepository implements AnswerRepository {
     await this.prisma.answer.create({
       data,
     })
+
+    DomainEvents.dispatchEventsForAggregate(answer.id)
   }
 
   async findById(id: string): Promise<Answer | null> {
@@ -66,5 +69,7 @@ export class PrismaAswersRepository implements AnswerRepository {
       },
       data,
     })
+
+    DomainEvents.dispatchEventsForAggregate(answer.id)
   }
 }

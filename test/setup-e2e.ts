@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto'
 import { execSync } from 'child_process'
 import { PrismaClient } from '../generated/prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
+import { DomainEvents } from '@/core/events/domain-events'
 
 function generateUniqueDatabaseUrl(schemaId: string) {
   if (!process.env.DATABASE_URL) {
@@ -21,6 +22,8 @@ beforeAll(async () => {
   const databaseUrl = generateUniqueDatabaseUrl(schemaId)
 
   process.env.DATABASE_URL = databaseUrl
+
+  DomainEvents.shouldRun = false
 
   execSync('pnpm prisma migrate deploy')
 })
